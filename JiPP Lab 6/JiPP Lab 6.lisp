@@ -59,20 +59,75 @@
   lista
 )
 
+;Sortowanie bąbelkowe rosnąco
+(defun wstawelement (elem lista)      ;Funkcja pomocnicza
+  (if (null lista)
+    (list elem)
+  (if (< elem (car lista))
+      (cons elem lista)
+  (cons (car lista) (wstawelement elem (cdr lista)))
+  )  
+  )
+)
+(defun buble-sort (lista)   
+  (let (wynik '())
+    (dolist (item lista)
+      (setq wynik (wstawelement item wynik))
+    )
+  wynik
+  )
+)
+
+
+
 ;Zadanie 5
-(defun iloczyn-list (l1 l2)
+(defun iloczyn-list1 (l1 l2)
 	(if (and (not (null l1)) (not (null l2)))
 		(cons (* (car l1) (car l2)) (iloczyn-list (cdr l1) (cdr l2)))
 	nil
 	)
 )
+;Wersja pod okiem nauczyciela (w pełni zgodna z treścią)
+(defun iloczyn-list2 (l1 l2)
+  (if (or (null l1) (null l2))
+    '()
+  (cons (* (car l1) (car l2)) (iloczyn-list2 (cdr l1) (cdr l1)))
+  )
+)
+
 
 ;Zadanie 6 - ile liczb %3
 (count-if #'(lambda (x) (= 0 (mod x 3))) '(1 2 3 4 5))
+
+(defun dziel3 (x) (= (mod x 3) 0))
+(defun ile-podzielnych-p3 (l1)
+  (let ((licznik 0))
+    (dolist (item l1)
+      (if (dziel3 item)
+        (setq licznik (+ licznik 1))
+      )
+    )
+  licznik
+  )
+)
+
 ;Zadanie 7
-(defun ile-podzielnych (x l1)
+(defun ile-podzielnych-pn (x l1)
 	(count-if #'(lambda (o) (= 0 (mod o x))) l1)
 )
+
+(defun ile-podzielnych-pn2 (x l1)   ;coś nie działa
+  (let ((licznik 0))
+    (dolist (item l1)
+      (if ((= 0 (mod item x)))
+        (setq licznik (+ licznik 1))
+      )
+    )
+  licznik
+  )
+)
+
+
 
 ;Zadanie 8
 (defun podzielne-przez-5 (st)
@@ -106,7 +161,7 @@
    )
 )
 
-
+;W domu zrób switchem menu. Urzyj (format) oraz (read)
 
 
 
