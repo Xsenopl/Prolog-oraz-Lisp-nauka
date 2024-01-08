@@ -1,15 +1,11 @@
 ; JiPP Lab 2 z Lispa. Zapoznianie z listami.
+; Załadowanie pliku w clisp
+; (load "E:/prywatny przed przniesieniem/studia/Jczyki i parad progr - VI sem/Laboratoria/JiPP Lab 6/JiPP Lab 6.lisp")
+
 ; Zadanie 1
 (append (list 1 2 3 4 5) (list 6 7 8 9))
 
-(defun polacz-listy1 (l1 l2) ; nie działa
-    (dolist (x l2 l1)
-        (cons x l1)
-    )
-    (return-from polacz-listy1 l1)
-)
-
-(defun polacz-listy2 (l1 l2) ; działa
+(defun polacz-listy (l1 l2) ; działa
     (if (null l1)
         l2
         (cons (car l1) (polacz-listy2 (cdr l1) l2))
@@ -22,9 +18,10 @@
 (defun odwr1 (l1)
     (setq l2 '())
     (loop for i in l1 do
-        (push i l2)
+        (setq l2 (cons i l2))
+;		(push i l2)				;Działa i push i setq, ale poprawniejsze jest chyba setq
     )
-    (return-from odwr l2)
+    (return-from odwr1 l2)
 )
 
 (defun odwr2 (lista)
@@ -119,7 +116,7 @@
 (defun ile-podzielnych-pn2 (x l1)   ;coś nie działa
   (let ((licznik 0))
     (dolist (item l1)
-      (if ((= 0 (mod item x)))
+      (if (= 0 (mod item x))
         (setq licznik (+ licznik 1))
       )
     )
@@ -163,6 +160,140 @@
 
 ;W domu zrób switchem menu. Urzyj (format) oraz (read)
 
+(defun menu ()
+  (format t "~%===== MENU =====~%")
+  (format t "1. Polacz listy~%")
+  (format t "2. Odwroc liste v1~%")
+  (format t "3. Odwroc liste v2~%")
+  (format t "4. Palindrom~%")
+  (format t "5. Bubble-sort~%")
+  (format t "6. Podzielnych przez 3~%")
+  (format t "7. Podzielnych przez pn~%")
+  (format t "8. Stos a'la piatka~%")
+  (format t "9. Generuj liste~%")
+  (format t "10. Generuj liste ascii~%")
+  (format t "44. Wyjdz~%")
+  (format t "Wybierz opcje: ")
+  (let ((opcja (read)))
+    (case opcja
+	   (1 (progn
+           (format t "Podaj liste 1 (ar1 ar2 ar3): ")
+           (let ((lista1 (read-from-string (read-line))))
+				(format t "Podaj liste 2 (ar1 ar2 ar3): ")
+			 (let ((lista2 (read-from-string (read-line))))
+				(format t "Polaczone listy (wersja 1): ")
+				(wyswietl-liste (polacz-listy lista1 lista2))
+				(format t "~%")
+			))
+           (menu)	   
+		   )
+		)
+      (2 (progn
+           (format t "Podaj liste ((ar1 ar2 ar3): ")
+           (let ((lista (read-from-string (read-line))))
+             (format t "Odwrocona lista v1: ")
+             (wyswietl-liste (odwr1 lista ))
+             (format t "~%")
+			)
+           (menu)
+         )
+      )
+      (3 (progn
+           (format t "Podaj liste (ar1 ar2 ar3): ")
+           (let ((lista (read-from-string (read-line))))
+             (format t "Odwrocona lista v2: ")
+             (wyswietl-liste (odwr2 lista))
+             (format t "~%")
+			)
+           (menu)
+         )
+      )
+	  (4 (progn
+           (format t "Podaj palindrom (ar1 ar2 ar3): ")
+           (let ((lista (read-from-string (read-line))))
+             (format t "Czy to palindrom? ")
+             (if (palindrom1 lista)
+				(format t "T")
+				(format t "nil"))
+             (format t "~%")
+			)
+           (menu)
+         )
+      )
+	  (5 (progn
+           (format t "Podaj liste (ar1 ar2 ar3): ")
+           (let ((lista (read-from-string (read-line))))
+             (format t "Posostowana: ")
+             (wyswietl-liste (buble-sort lista))
+			 (format t "~%")
+			)
+           (menu)
+         )
+      )
+	  (6 (progn
+           (format t "Podaj liste (ar1 ar2 ar3): ")
+           (let ((lista (read-from-string (read-line))))
+             (format t "Ile podzielnych przez 3: ")
+             (format t "~D"(ile-podzielnych-p3 lista))
+			 (format t "~%")
+			)
+           (menu)
+         )
+      )
+	  (7 (progn
+           (format t "Podaj liste (ar1 ar2 ar3): ")
+           (let ((lista (read-from-string (read-line))))  
+             (format t "Ile podzielnych przez (napisz) ")
+			(let ((x (read)))
+             (format t "~D"(ile-podzielnych-pn x lista))
+			 (format t "~%")
+			))
+           (menu)
+         )
+      )
+	  (8 (progn
+           (format t "Podaj liste (ar1 ar2 ar3): ")
+           (let ((lista (read-from-string (read-line))))
+             (format t "Lista podzielnych przez 5: ")
+             (wyswietl-liste (podzielne-przez-5 lista))
+			 (format t "~%")
+			)
+           (menu)
+         )
+      )
+	  (9 (progn
+           (format t "Podaj przedzial (dwie liczby): ")
+           (let ((a (read)) (b (read)))
+             (format t "Lista gererowana od do: ")
+             (wyswietl-liste (generuj-liste a b))
+			 (format t "~%")
+			)
+           (menu)
+         )
+      )
+	  (10 (progn
+           (format t "Podaj przedzial (dwie liczby ascii): ")
+           (let ((a (read)) (b (read)))
+             (format t "Lista gererowana od do: ")
+             (wyswietl-liste (generuj-liste-ascii a b))
+			 (format t "~%")
+			)
+           (menu)
+         )
+      )
+      (44 (format t "Do widzenia!~%"))
+      (t (progn
+           (format t "Niepoprawna opcja. Wybierz ponownie.~%")
+           (menu)
+         )
+      )
+    )
+  )
+)
+
+(defun wyswietl-liste (lista)
+  (format t "~{~a ~}" lista)
+)
 
 
 
